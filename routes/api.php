@@ -24,3 +24,7 @@ Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
     });
+Route::get('userconnecte', 'AuthController@userconnecte');
+Route::get('membres', 'AuthController@membres');
+Route::apiResource('/users' ,'UserController');
+Route::post('/modifier/{id}','UserController@modifier');

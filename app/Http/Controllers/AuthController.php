@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\newUser;
+use Illuminate\Support\Facades\Mail;
 class AuthController extends Controller
 {
     public function __construct()
@@ -23,10 +25,17 @@ $this->validate($request, [
 'email' => 'required|email',
 'password' => 'required|min:6',
 ]);
+$data = array(
+    'login'    => $request->email,
+    'password' => $request->password,
+    
+);
+Mail::to($request->email)->send(new newUser($data));
 $user = new User();
 $user->name = $request->name;
 $user->email = $request->email;
 $user->password = bcrypt($request->password);
+$user->role = "user";
 $user->save();
 return response()->json(['user' => $user]);
 }
@@ -90,4 +99,14 @@ return response()->json([
 public function guard(){
 return \Auth::Guard('api');
 }
+public function userconnecte() {
+    $user= User::find(auth()->id());
+    return response()->json(['user' => $user]);
+}
+public function membres(){
+$membres = User::where('role','<>','admin')->get();
+return response()->json(['membres' => $membres]);
+
+}
+
 }
